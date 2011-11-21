@@ -178,6 +178,7 @@ class Collection(object):
         
         return self._database["$cmd"].find_one({"group": body})
     
+    @defer.inlineCallbacks
     def filemd5(self, spec):
         if not isinstance(spec, ObjectId):
             raise ValueError("filemd5 expected an objectid for its on-keyword argument")
