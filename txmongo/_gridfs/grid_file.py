@@ -189,7 +189,7 @@ class GridIn(object):
         self._buffer = StringIO()
 
     @defer.inlineCallbacks
-    def __flush(self):
+    def __flush(self, safe=True):
         """Flush the file to the database.
         """
         yield self.__flush_buffer()
@@ -197,17 +197,17 @@ class GridIn(object):
         self._file["md5"] = md5
         self._file["length"] = self._position
         self._file["uploadDate"] = datetime.datetime.utcnow()
-        yield self._coll.files.insert(self._file)
+        yield self._coll.files.insert(self._file, safe=safe)
 
     @defer.inlineCallbacks
-    def close(self):
+    def close(self, safe=True):
         """Flush the file and close it.
 
         A closed file cannot be written any more. Calling
         :meth:`close` more than once is allowed.
         """
         if not self._closed:
-            yield self.__flush()
+            yield self.__flush(safe=safe)
             self._closed = True
 
     # TODO should support writing unicode to a file. this means that files will
